@@ -1,0 +1,17 @@
+name: agent_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pip
+  - pip:
+    - crewai
+    - crewai-tools
+    - open-ai
+    - pandas
+    - numpy
+    - scipy
+    - matplotlib
+    - seaborn
+    - plotly
