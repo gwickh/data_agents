@@ -9,13 +9,13 @@ Description:      LLM-powered agents to perform data cleaning, analysis and visu
 
 from crewai import Agent, Task
 import pandas as pd
-import openai
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import argparse
+from datetime import datetime
 
-# Set OpenAI API Key
+# Set Mistral AI API Key
 
 class PlotUtils:
     """
@@ -53,7 +53,7 @@ class DatasetLoader:
 
 # Agent 2: Generate visualization script
 class VisualisationAgent:
-    def __init__(self, dataset_path, api_key, model="gpt-4"):
+    def __init__(self, dataset_path, api_key, model="mistral"):
         self.dataset_path = dataset_path
         self.api_key = api_key
         self.model = model
@@ -74,12 +74,12 @@ class VisualisationAgent:
             raise Exception(f"Error loading dataset: {e}")
 
     def generate_visualization_script(self):
-        """Uses GPT-4 to generate a visualization script."""
-        # Load a preview of the dataset to pass to GPT
+        """Uses Mistral AI to generate a visualization script."""
+        # Load a preview of the dataset to pass to Mistral AI
         dataset_preview = self.load_dataset_preview()
         dataset_path = os.path.basename(self.dataset_path)
         
-        # GPT-4 prompt
+        # Mistral AI prompt
         prompt = f"""
             You are a Python data analysis assistant. Generate a Python script to visualize the following dataset.
             The dataset preview is:
@@ -90,11 +90,8 @@ class VisualisationAgent:
             2. Use seaborn/matplotlib to create a plot visualising the data.
             3. Save plots to an `output` directory.
         """
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response["choices"][0]["message"]["content"]  # Return the script
+        response = mistral.generate(prompt, model=self.model)
+        return response["content"]  # Return the script
 
 # Execute script
 class ScriptExecutorAgent:
@@ -141,7 +138,7 @@ class CrewAIVisualizationWorkflow:
 if __name__ == "__main__":
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="CrewAI-based visualization workflow.")
-    parser.add_argument("--api_key", required=True, help="Path to the text file containing the OpenAI API key.")
+    parser.add_argument("--api_key", required=True, help="Path to the text file containing the Mistral AI API key.")
     parser.add_argument("--data", required=True, help="Path to the dataset in CSV format.")
     args = parser.parse_args()
 
